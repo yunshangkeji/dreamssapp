@@ -28,7 +28,7 @@ service.interceptors.request.use(config => {
 
 // 响应拦截器
 service.interceptors.response.use(res => {
-  const isOK = (res.data.ret === 0 && res.data.code === "")
+  const isOK = (res.data.errno === 0)
   if (typeof (res.data.msg) === "string" && res.data.msg.length > 0) {
     uni.showToast({ title: res.data.msg, icon: isOK ? "success" : "none" });
   } else if (typeof (res.data.message) === "string" && res.data.message.length > 0) {
