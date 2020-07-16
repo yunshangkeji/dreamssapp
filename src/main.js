@@ -5,6 +5,9 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+import { api } from "@/utils/api";
+
+Vue.prototype.api = api
 Vue.prototype.$store = store
 
 App.mpType = 'app'
