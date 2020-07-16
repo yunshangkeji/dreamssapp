@@ -54,7 +54,7 @@
                     <view class="user_onlinebox">
                       <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
                         <tr align="center">
-                          <td>---</td>
+                          <td style="color: #ffe020; text-shadow: 1px 0rem 1px #444444,-1px 0rem 1px #444444,0rem 1px 1px #444444,0rem -1px 1px #444444;">♥</td>
                         </tr>
                         <tr align="center">
                           <td>在线</td>
