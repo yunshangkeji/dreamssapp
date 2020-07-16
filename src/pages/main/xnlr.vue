@@ -2,12 +2,17 @@
   <view class="content">
     <view class="header">
       <view style="padding: 5px;text-align:center">
-        <img style="border-radius:50%;" width="60" height="60" src="~@/static/dreamss/logo.jpg" />
+        <img
+          style="border-radius:50%;"
+          width="60"
+          height="60"
+          src="http://qiniu.feieryun.cn/dreamssapp/logo.jpg"
+        />
       </view>
       <view style="text-align:center">Dream筑梦工作室</view>
     </view>
     <view style="padding: 20px 20px 10px 20px;">
-      <uni-segmented-control :current="form.sex" :values="items" ctive-color="#007aff" />
+      <uni-segmented-control :current="apiReq.query.sex" :values="items" ctive-color="#007aff" />
     </view>
     <view>
       <view class="user_card" v-for="(item,i) in staffList" :key="i">
@@ -21,12 +26,7 @@
         >
           <tr align="center" height="100%">
             <td width="60">
-              <img
-                style="border-radius:50%;"
-                width="50"
-                height="50"
-                src="~@/static/dreamss/logo.jpg"
-              />
+              <img style="border-radius:50%;" width="50" height="50" :src="item.avatar" />
             </td>
             <td>
               <table style="width: 100%">
@@ -71,7 +71,7 @@
                       class="mini-btn"
                       type="default"
                       style="width: 60px; line-height: 2; padding-left: 10px; padding-right: 10px; font-size: 13px; border-radius: 30px; background-color: #ffe020"
-                      @click="order"
+                      @click="popup_open(item)"
                     >下单</button>
                   </td>
                 </tr>
@@ -82,8 +82,8 @@
       </view>
     </view>
     <view>
-      <uni-popup ref="popupShare" type="share" @change="change">
-        <uni-popup-share title="分享到" @select="select">1231asdf23</uni-popup-share>
+      <uni-popup ref="popupShare" type="share" @change="popup_change">
+        <uni-popup-share :formData="formData" @select="popup_select"></uni-popup-share>
       </uni-popup>
     </view>
   </view>
@@ -97,45 +97,38 @@ export default {
   },
   data() {
     return {
-      form: {
-        sex: 0
+      apiReq: {
+        query: {
+          sex: 0
+        }
       },
       items: ["全部", "男生", "女生"],
-      staffList: []
+      staffList: [],
+      formData: {}
     };
   },
   onLoad() {
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
-    this.staffList.push({ nickname: "昵称1" });
+    for (var i = 0; i < 100; i++) {
+      this.staffList.push({
+        avatar: "http://qiniu.feieryun.cn/dreamssapp/avatar.jpg",
+        nickname: `昵称${i}`
+      });
+    }
   },
   methods: {
-    order() {
+    popup_open(item) {
+      uni.hideTabBar();
       this.$refs.popupShare.open();
-    },
-    /**
-     * 选择内容
-     */
-    select(e, done) {
-      uni.showToast({
-        title: `您选择了第${e.index + 1}项：${e.item.text}`,
-        icon: "none"
-      });
-      done();
+      this.formData = item;
     },
     /**
      * popup 状态发生变化触发
      * @param {Object} e
-     */ change(e) {
+     */
+    popup_change(e) {
+      if (!e.show) {
+        uni.showTabBar();
+      }
       console.log("popup " + e.type + " 状态", e.show);
     }
   }
@@ -149,7 +142,7 @@ export default {
 }
 
 .header {
-  background-image: url("~@/static/dreamss/bg.png");
+  background-image: url("http://qiniu.feieryun.cn/dreamssapp/bg.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding-top: 20px;
