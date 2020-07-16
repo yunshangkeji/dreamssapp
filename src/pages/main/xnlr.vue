@@ -54,7 +54,9 @@
                     <view class="user_onlinebox">
                       <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
                         <tr align="center">
-                          <td style="color: #ffe020; text-shadow: 1px 0rem 1px #444444,-1px 0rem 1px #444444,0rem 1px 1px #444444,0rem -1px 1px #444444;">♥</td>
+                          <td
+                            style="color: #ffe020; text-shadow: 1px 0rem 1px #444444,-1px 0rem 1px #444444,0rem 1px 1px #444444,0rem -1px 1px #444444;"
+                          >♥</td>
                         </tr>
                         <tr align="center">
                           <td>在线</td>
@@ -69,6 +71,7 @@
                       class="mini-btn"
                       type="default"
                       style="width: 60px; line-height: 2; padding-left: 10px; padding-right: 10px; font-size: 13px; border-radius: 30px; background-color: #ffe020"
+                      @click="order"
                     >下单</button>
                   </td>
                 </tr>
@@ -78,11 +81,20 @@
         </table>
       </view>
     </view>
+    <view>
+      <uni-popup ref="popupShare" type="share" @change="change">
+        <uni-popup-share title="分享到" @select="select">1231asdf23</uni-popup-share>
+      </uni-popup>
+    </view>
   </view>
 </template>
 
 <script>
+import uniPopupShare from "./xnlr-order.vue";
 export default {
+  components: {
+    uniPopupShare
+  },
   data() {
     return {
       form: {
@@ -96,8 +108,37 @@ export default {
     this.staffList.push({ nickname: "昵称1" });
     this.staffList.push({ nickname: "昵称1" });
     this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
+    this.staffList.push({ nickname: "昵称1" });
   },
-  methods: {}
+  methods: {
+    order() {
+      this.$refs.popupShare.open();
+    },
+    /**
+     * 选择内容
+     */
+    select(e, done) {
+      uni.showToast({
+        title: `您选择了第${e.index + 1}项：${e.item.text}`,
+        icon: "none"
+      });
+      done();
+    },
+    /**
+     * popup 状态发生变化触发
+     * @param {Object} e
+     */ change(e) {
+      console.log("popup " + e.type + " 状态", e.show);
+    }
+  }
 };
 </script>
 
