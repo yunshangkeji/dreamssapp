@@ -17,19 +17,26 @@ export default {
         return;
       }
       const query = this.$route.query;
-      if (
-        typeof query.wechat_code === "string" &&
-        query.wechat_code.length > 0
-      ) {
-        this.checkWechatCode(query.wechat_code);
-      }
+      this.checkWechatCode(query.wechat_code);
     },
     checkWechatCode(wechat_code) {
-      console.log("wechat_code", wechat_code);
+      if (typeof wechat_code !== "string") {
+        return this.redirectToWechatLogin();
+      }
+      if (wechat_code.length === 0) {
+        return this.redirectToWechatLogin();
+      }
       store.dispatch("api/set", { wechat_code });
       uni.reLaunch({
         url: "/"
       });
+    },
+    redirectToWechatLogin() {
+      const appid = "wx2e00731902ff01ef";
+      const redirect_uri = "http%3A%2F%2Fwx.xiangxisheng.cn";
+      const state = "firadio_dreamss";
+      const url = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=${state}#wechat_redirect`;
+      location.href = url;
     }
   }
 };
