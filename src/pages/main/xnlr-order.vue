@@ -16,7 +16,7 @@
         <form @submit="formSubmit">
           <view class="uni-form-item uni-column">
             <view class="title">选择聊天方式</view>
-            <radio-group name="service_type">
+            <radio-group name="peiliao_type">
               <label>
                 <radio value="1" />
                 <text>文字语言条</text>
@@ -29,7 +29,7 @@
           </view>
           <view class="uni-form-item uni-column">
             <view class="title">选择时长</view>
-            <radio-group name="service_duration">
+            <radio-group name="peiliao_duration">
               <label>
                 <radio value="1" />
                 <text>半小时</text>
@@ -46,10 +46,16 @@
           </view>
           <view class="uni-form-item uni-column">
             <view class="title">您的微信号</view>
-            <input class="uni-input" name="wechat" placeholder="请输入您的微信号码" />
+            <input class="uni-input" name="user_wechat" placeholder="请输入您的微信号码" />
           </view>
           <view class="uni-share-button-box">
-            <button class="uni-share-button" form-type="submit" type="primary">确定</button>
+            <button
+              class="uni-share-button"
+              form-type="submit"
+              type="primary"
+              :loading="loading"
+              :disabled="loading"
+            >确定</button>
           </view>
         </form>
       </view>
@@ -76,50 +82,55 @@ export default {
       }
     };
   },
+  computed: {
+    loading() {
+      // 如处于加载中，应显示遮罩层
+      return this.$store.getters.apiLoading;
+    }
+  },
   created() {},
   methods: {
     /**
      * 提交下单
      */
     formSubmit: function(e) {
+      /*
       console.log(
         "form发生了submit事件，携带数据为：" + JSON.stringify(e.detail.value)
-      );
-      jweixin.config({
-        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-        appId: "wx2e00731902ff01ef", // 必填，公众号的唯一标识
-        timestamp: 123456789, // 必填，生成签名的时间戳
-        nonceStr: "test", // 必填，生成签名的随机串
-        signature: "123", // 必填，签名
-        jsApiList: [] // 必填，需要使用的JS接口列表
-      });
-      jweixin.ready(function() {
-        uni.showToast({ title: "jweixin.ready!", icon: "none" });
-      });
-      jweixin.error(function(res) {
-        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-        uni.showToast({
-          title: `jweixin.error:${JSON.stringify(res)}`,
-          icon: "none"
+      );//*/
+      this.api("dreamss/order:add", e.detail.value).then(data => {
+        jweixin.config(data.config);
+        jweixin.ready(function() {
+          uni.showToast({
+            title: `jweixin.ready`,
+            icon: "none"
+          });
+        });
+        jweixin.error(function(res) {
+          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          uni.showToast({
+            title: `jweixin.error:${JSON.stringify(res)}`,
+            icon: "none"
+          });
         });
       });
       return;
       //定义表单规则
       var rule = [
         {
-          name: "service_type",
+          name: "peiliao_type",
           checkType: "notnull",
           checkRule: "",
           errorMsg: "请选择聊天方式"
         },
         {
-          name: "service_duration",
+          name: "peiliao_duration",
           checkType: "notnull",
           checkRule: "",
           errorMsg: "请选择时长"
         },
         {
-          name: "wechat",
+          name: "user_wechat",
           checkType: "string",
           checkRule: "5,30",
           errorMsg: "微信号应为5-30个字符"
@@ -133,7 +144,7 @@ export default {
         uni.showToast({ title: graceChecker.error, icon: "none" });
         return;
       }
-      uni.showToast({ title: "验证通过!", icon: "none" });
+      uni.showToast({ title: "验证通过!", icon: "success" });
     },
     /**
      * 关闭窗口
