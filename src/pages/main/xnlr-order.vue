@@ -97,28 +97,7 @@ export default {
       /*
       console.log(
         "form发生了submit事件，携带数据为：" + JSON.stringify(e.detail.value)
-      );//*/
-      this.api("dreamss/order:add", e.detail.value).then(data => {
-        jweixin.config(data.config);
-        jweixin.ready(function() {
-          data.chooseWXPay.success = function(res) {
-            // 支付成功后的回调函数
-            uni.showToast({
-              title: `chooseWXPay.success:${JSON.stringify(res)}`,
-              icon: "none"
-            });
-          };
-          jweixin.chooseWXPay(data.chooseWXPay);
-        });
-        jweixin.error(function(res) {
-          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-          uni.showToast({
-            title: `jweixin.error:${JSON.stringify(res)}`,
-            icon: "none"
-          });
-        });
-      });
-      return;
+	  );//*/
       //定义表单规则
       var rule = [
         {
@@ -148,7 +127,28 @@ export default {
         uni.showToast({ title: graceChecker.error, icon: "none" });
         return;
       }
-      uni.showToast({ title: "验证通过!", icon: "success" });
+      const apiReqData = e.detail.value;
+      apiReqData.url = window.location.href;
+      this.api("dreamss/order:add", e.detail.value).then(data => {
+        jweixin.config(data.jsapi_config);
+        jweixin.ready(function() {
+          data.jsapi_chooseWXPay.success = function(res) {
+            // 支付成功后的回调函数
+            uni.showToast({
+              title: `支付成功了！:${res.errMsg}`,
+              icon: "none"
+            });
+          };
+          jweixin.chooseWXPay(data.jsapi_chooseWXPay);
+        });
+        jweixin.error(function(res) {
+          // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          uni.showToast({
+            title: `jweixin.error:${JSON.stringify(res)}`,
+            icon: "none"
+          });
+        });
+      });
     },
     /**
      * 关闭窗口
