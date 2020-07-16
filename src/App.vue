@@ -1,13 +1,36 @@
 <script>
+import store from "@/store";
 export default {
   onLaunch: function() {
     console.log("App Launch");
+    this.checkRouter();
   },
   onShow: function() {
     console.log("App Show");
   },
   onHide: function() {
     console.log("App Hide");
+  },
+  methods: {
+    checkRouter() {
+      if (typeof this.$route.query !== "object") {
+        return;
+      }
+      const query = this.$route.query;
+      if (
+        typeof query.wechat_code === "string" &&
+        query.wechat_code.length > 0
+      ) {
+        this.checkWechatCode(query.wechat_code);
+      }
+    },
+    checkWechatCode(wechat_code) {
+      console.log("wechat_code", wechat_code);
+      store.dispatch("api/set", { wechat_code });
+      uni.reLaunch({
+        url: "/"
+      });
+    }
   }
 };
 </script>

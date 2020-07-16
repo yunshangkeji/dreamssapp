@@ -1,5 +1,6 @@
 const state = {
-  iLoading: 0
+  iLoading: 0,
+  wechat_code: ""
 };
 
 const mutations = {
@@ -8,6 +9,11 @@ const mutations = {
   },
   END: (state) => {
     state.iLoading--
+  },
+  SET: (state, oData) => {
+    for (var key in oData) {
+      state[key] = oData[key]
+    }
   }
 };
 
@@ -19,6 +25,9 @@ const actions = {
     setTimeout(function () {
       commit("END");
     }, 1000)
+  },
+  set({ commit }, oData) {
+    commit("SET", oData);
   }
 };
 
