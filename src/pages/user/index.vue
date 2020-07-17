@@ -42,7 +42,6 @@ export default {
                   const apiReqData = {};
                   console.log(imageRes);
                   that.api("wechat/user_avatar_upload", apiReqData).then(() => {
-                    uni.showLoading({ title: "正在上传头像...", mask: true });
                     // 取得上传配置后，开始上传到七牛云
                     upload(imageRes.tempFiles[0]).then(res => {
                       //上传成功

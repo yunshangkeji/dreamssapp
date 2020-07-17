@@ -21,6 +21,8 @@ export default {
     },
     checkWechatCode(wechat_code) {
       if (process.env.NODE_ENV === "development") {
+        wechat_code = "development";
+        store.dispatch("api/set", { wechat_code });
         return;
       }
       if (typeof wechat_code !== "string") {

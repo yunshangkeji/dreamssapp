@@ -107,7 +107,7 @@ export default {
       formData: {}
     };
   },
-  onLoad() {
+  created() {
     for (var i = 0; i < 100; i++) {
       this.staffList.push({
         avatar: "http://qiniu.feieryun.cn/dreamssapp/avatar.jpg",
