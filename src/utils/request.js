@@ -66,9 +66,9 @@ export default (option) => {
     store.dispatch("api/begin");
     service.request(option).then(res => {
       resolve(res);
-      store.dispatch("api/end");
-    }).catch(error => {
-      reject(error);
+    }).catch(err => {
+      reject(err);
+    }).then(() => {
       store.dispatch("api/end");
     });
   });

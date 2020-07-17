@@ -1,14 +1,22 @@
 const state = {
   iLoading: 0,
+  iDisabled: 0,
   wechat_code: ""
 };
 
 const mutations = {
   BEGIN: (state) => {
     state.iLoading++
+    state.iDisabled++
   },
-  END: (state) => {
-    state.iLoading--
+  END: (state, type) => {
+    switch (type) {
+      case ('unlock'):
+        state.iDisabled--
+        break;
+      default:
+        state.iLoading--
+    }
   },
   SET: (state, oData) => {
     for (var key in oData) {
@@ -22,8 +30,9 @@ const actions = {
     commit("BEGIN");
   },
   end({ commit }) {
+    commit("END");
     setTimeout(function () {
-      commit("END");
+      commit("END", 'unlock');
     }, 1000)
   },
   set({ commit }, oData) {

@@ -20,6 +20,9 @@ export default {
       this.checkWechatCode(query.wechat_code);
     },
     checkWechatCode(wechat_code) {
+      if (process.env.NODE_ENV === "development") {
+        return;
+      }
       if (typeof wechat_code !== "string") {
         return this.redirectToWechatLogin();
       }

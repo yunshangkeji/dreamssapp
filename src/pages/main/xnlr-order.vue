@@ -53,8 +53,8 @@
               class="uni-share-button"
               form-type="submit"
               type="primary"
-              :loading="loading"
-              :disabled="loading"
+              :loading="apiLoading"
+              :disabled="apiDisabled"
             >确定</button>
           </view>
         </form>
@@ -83,9 +83,13 @@ export default {
     };
   },
   computed: {
-    loading() {
-      // 如处于加载中，应显示遮罩层
+    apiLoading() {
+      // 提示加载中
       return this.$store.getters.apiLoading;
+    },
+    apiDisabled() {
+      // 如处于加载中，应禁用操作按钮
+      return this.$store.getters.apiDisabled;
     }
   },
   created() {},
@@ -121,9 +125,8 @@ export default {
       ];
       //进行表单检查
       const formData = e.detail.value;
-      console.log(formData);
       const checkRes = graceChecker.check(formData, rule);
-      if (!checkRes) {
+      if (!checkRes && process.env.NODE_ENV !== "development") {
         uni.showToast({ title: graceChecker.error, icon: "none" });
         return;
       }

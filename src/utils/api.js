@@ -2,6 +2,7 @@ import request from "@/utils/request";
 import store from "@/store";
 
 export function api(sPath, mData) {
+  uni.showLoading({ title: "处理中...", mask: true });
   mData.wechat_code = store.getters.wechatCode
   const aPath = sPath.split('/');
   const sCategory = aPath[0];
@@ -12,5 +13,13 @@ export function api(sPath, mData) {
   option.url = "/wechat/" + sCategory + "/" + sObject;
   option.method = sMethod;
   option.data = mData;
-  return request(option);
+  return new Promise((resolve, reject) => {
+    request(option).then(res => {
+      resolve(res);
+    }).catch(err => {
+      reject(err);
+    }).then(() => {
+      uni.hideLoading();
+    });
+  });
 }
