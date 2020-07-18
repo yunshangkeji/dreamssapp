@@ -100,7 +100,7 @@
                       <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
                         <tr align="center">
                           <td
-                            style="color: #ffe020; text-shadow: 1px 0rem 1px #444444,-1px 0rem 1px #444444,0rem 1px 1px #444444,0rem -1px 1px #444444;"
+                            style="color: rgb(255,60,60); text-shadow: 1px 0rem 1px #444444,-1px 0rem 1px #444444,0rem 1px 1px #444444,0rem -1px 1px #444444;"
                           >♥</td>
                         </tr>
                         <tr align="center">
@@ -114,8 +114,8 @@
                   <td>
                     <button
                       class="mini-btn"
-                      type="default"
-                      style="width: 60px; line-height: 2; padding-left: 10px; padding-right: 10px; font-size: 13px; border-radius: 30px; background-color: #ffe020"
+                      type="order"
+                      style="width: 60px; line-height: 2; padding-left: 10px; padding-right: 10px; font-size: 13px;"
                       @click="popup_open(item)"
                     >下单</button>
                   </td>
@@ -192,6 +192,7 @@ export default {
         duration: 500
       },
       loadmore: {
+        reload: false,
         status: "more",
         contentText: {
           contentdown: "上拉加载更多",
@@ -205,22 +206,24 @@ export default {
     this.getList();
   },
   onPullDownRefresh() {
-    this.reload = true;
-    this.last_id = "";
+    console.log("main.xnlr.onPullDownRefresh");
+    this.loadmore.last_id = "";
     this.getList();
   },
   onReachBottom() {
-    this.status = "more";
+    this.loadmore.status = "more";
     this.getList(0);
   },
   methods: {
     getList(sex) {
+      this.loadmore.status = "loading";
       for (var i = 0; i < 10; i++) {
         this.staffList.push({
           avatar: "http://qiniu.feieryun.cn/dreamssapp/avatar.jpg",
           nickname: `昵称${i}`
         });
       }
+      this.loadmore.status = "nomore";
     },
     popup_open(item) {
       uni.hideTabBar();
@@ -337,7 +340,8 @@ export default {
 }
 
 .uni-tab-item-title {
-  color: #555;
+  color: #555555;
+  font-weight: 600;
   font-size: 30rpx;
   height: 80rpx;
   line-height: 80rpx;
@@ -348,7 +352,7 @@ export default {
 }
 
 .uni-tab-item-title-active {
-  color: #007aff;
+  color: rgb(255, 60, 60);
 }
 
 .scroll-h {
@@ -363,5 +367,10 @@ export default {
 		border-bottom-style: solid;
 		border-bottom-width: 1px; */
   text-align: center;
+}
+
+.mini-btn[type="order"] {
+  color: #fff;
+  background-color: rgb(255, 60, 60);
 }
 </style>
