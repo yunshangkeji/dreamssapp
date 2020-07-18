@@ -12,7 +12,7 @@ export default (file, upload_form) => {
         for (var fieldName in upload_form.formdata) {
             data.append(fieldName, upload_form.formdata[fieldName]);
         }
-        data.append('file', upload_form.file_field_name);
+        data.append(upload_form.file_field_name, file);
         service.post('/', data, {
             headers: upload_form.headers,
         }).then(res => {
