@@ -1,6 +1,6 @@
 <template>
   <view class="page-view">
-    <view class="header">
+    <view class="header" v-if="0">
       <view style="padding: 5px;text-align:center">
         <img
           style="border-radius:50%;"
@@ -11,9 +11,54 @@
       </view>
       <view style="text-align:center">Dream筑梦工作室</view>
     </view>
-    <view style="padding: 20px 20px 10px 20px;">
+    <view>
+      <uni-swiper-dot
+        :info="swiper1.info"
+        :current="swiper1.current"
+        :mode="swiper1.mode"
+        :dots-styles="swiper1.dotsStyles"
+        field="content"
+      >
+        <swiper
+          class="swiper-box"
+          :indicator-dots="swiper1.indicatorDots"
+          :autoplay="swiper1.autoplay"
+          :interval="swiper1.interval"
+          :duration="swiper1.duration"
+          @change="swiper_change"
+        >
+          <swiper-item v-for="(item, index) in swiper1.info" :key="index">
+            <view :class="item.colorClass" class="swiper-item">
+              <image class="image" :src="item.url" mode="aspectFill" />
+            </view>
+          </swiper-item>
+        </swiper>
+      </uni-swiper-dot>
+    </view>
+    <view style="padding: 20px 20px 10px 20px;" v-if="0">
       <uni-segmented-control :current="apiReq.query.sex" :values="items" ctive-color="#007aff" />
     </view>
+    <scroll-view
+      id="tab-bar"
+      class="scroll-h"
+      :scroll-x="true"
+      :show-scrollbar="false"
+      :scroll-into-view="scrollView.scrollInto"
+    >
+      <view
+        v-for="(tab,index) in scrollView.tabBars"
+        :key="tab.id"
+        class="uni-tab-item"
+        :id="tab.id"
+        :data-current="index"
+        @click="scrollView_ontabtap"
+      >
+        <text
+          class="uni-tab-item-title"
+          :class="scrollView.tabIndex==index ? 'uni-tab-item-title-active' : ''"
+        >{{tab.name}}</text>
+      </view>
+    </scroll-view>
     <view>
       <view class="user_card" v-for="(item,i) in staffList" :key="i">
         <table
@@ -81,6 +126,7 @@
         </table>
       </view>
     </view>
+    <uni-load-more :status="loadmore.status" :icon-size="16" :content-text="loadmore.contentText" />
     <view>
       <uni-popup ref="popupShare" type="share" @change="popup_change">
         <uni-popup-share :formData="formData" @select="popup_select"></uni-popup-share>
@@ -91,9 +137,11 @@
 
 <script>
 import uniPopupShare from "./xnlr-order.vue";
+import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 export default {
   components: {
-    uniPopupShare
+    uniPopupShare,
+    uniLoadMore
   },
   data() {
     return {
@@ -102,20 +150,78 @@ export default {
           sex: 0
         }
       },
-      items: ["全部", "男生", "女生"],
+      scrollView: {
+        tabIndex: 0,
+        tabBars: [
+          {
+            name: "全部",
+            id: "all"
+          },
+          {
+            name: "男生",
+            id: "boy"
+          },
+          {
+            name: "女生",
+            id: "girl"
+          }
+        ]
+      },
       staffList: [],
-      formData: {}
+      formData: {},
+      swiper1: {
+        info: [
+          {
+            colorClass: "uni-bg-red",
+            url: "http://qiniu.feieryun.cn/dreamssapp/logo400x200.jpg",
+            content: "内容 A"
+          }
+        ],
+        current: 0,
+        mode: "default",
+        dotsStyles: {
+          backgroundColor: "rgba(255, 255, 255, .3)",
+          border: "1px rgba(255, 255, 255, .3) solid",
+          color: "#fff",
+          selectedBackgroundColor: "rgba(255, 255, 255, .9)",
+          selectedBorder: "1px rgba(255, 255, 255, .9) solid"
+        },
+        indicatorDots: true,
+        autoplay: true,
+        interval: 2000,
+        duration: 500
+      },
+      loadmore: {
+        status: "more",
+        contentText: {
+          contentdown: "上拉加载更多",
+          contentrefresh: "加载中",
+          contentnomore: "没有更多"
+        }
+      }
     };
   },
   created() {
-    for (var i = 0; i < 100; i++) {
-      this.staffList.push({
-        avatar: "http://qiniu.feieryun.cn/dreamssapp/avatar.jpg",
-        nickname: `昵称${i}`
-      });
-    }
+    this.getList();
+  },
+  onPullDownRefresh() {
+    this.reload = true;
+    this.last_id = "";
+    this.getList();
+  },
+  onReachBottom() {
+    this.status = "more";
+    this.getList(0);
   },
   methods: {
+    getList(sex) {
+      for (var i = 0; i < 10; i++) {
+        this.staffList.push({
+          avatar: "http://qiniu.feieryun.cn/dreamssapp/avatar.jpg",
+          nickname: `昵称${i}`
+        });
+      }
+    },
     popup_open(item) {
       uni.hideTabBar();
       this.$refs.popupShare.open();
@@ -130,13 +236,21 @@ export default {
         uni.showTabBar();
       }
       console.log("popup " + e.type + " 状态", e.show);
+    },
+    swiper_change() {},
+    scrollView_ontabtap(e) {
+      const index = e.target.dataset.current || e.currentTarget.dataset.current;
+      this.scrollView_switchTab(index);
+    },
+    scrollView_switchTab(index) {
+      this.scrollView.tabIndex = index;
+      this.getList(index);
     }
   }
 };
 </script>
 
 <style scoped>
-
 .header {
   background-image: url("http://qiniu.feieryun.cn/dreamssapp/bg.png");
   background-repeat: no-repeat;
@@ -147,7 +261,7 @@ export default {
 .user_card {
   position: relative;
   border-radius: 10px;
-  margin: 12px 15px;
+  margin: 0px 15px 12px 15px;
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
 }
 
@@ -192,5 +306,62 @@ export default {
   border-radius: 10px;
   color: #dba100;
   background-color: #fff0cc;
+}
+
+.swiper-box {
+  height: 200px;
+}
+.swiper-item {
+  /* #ifndef APP-NVUE */
+  display: flex;
+  /* #endif */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #999;
+  color: #fff;
+}
+
+.image {
+  width: 750rpx;
+  height: 200px;
+}
+
+.uni-tab-item {
+  /* #ifndef APP-PLUS */
+  display: inline-block;
+  /* #endif */
+  flex-wrap: nowrap;
+  padding-left: 34rpx;
+  padding-right: 34rpx;
+}
+
+.uni-tab-item-title {
+  color: #555;
+  font-size: 30rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  flex-wrap: nowrap;
+  /* #ifndef APP-PLUS */
+  white-space: nowrap;
+  /* #endif */
+}
+
+.uni-tab-item-title-active {
+  color: #007aff;
+}
+
+.scroll-h {
+  width: 750rpx;
+  height: 80rpx;
+  flex-direction: row;
+  /* #ifndef APP-PLUS */
+  white-space: nowrap;
+  /* #endif */
+  /* flex-wrap: nowrap; */
+  /* border-color: #cccccc;
+		border-bottom-style: solid;
+		border-bottom-width: 1px; */
+  text-align: center;
 }
 </style>
