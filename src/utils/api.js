@@ -15,11 +15,13 @@ export function api(sPath, mData) {
   option.data = mData;
   return new Promise((resolve, reject) => {
     request(option).then(res => {
+      uni.hideLoading();
       resolve(res);
     }).catch(err => {
+      uni.hideLoading();
       reject(err);
     }).then(() => {
-      uni.hideLoading();
+
     });
   });
 }

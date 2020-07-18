@@ -16,11 +16,14 @@ export default (file, upload_form) => {
         service.post('/', data, {
             headers: upload_form.headers,
         }).then(res => {
+            uni.hideLoading();
+            const isOK = (res.data.errno === 0)
+            uni.showToast({ title: res.data.message, icon: isOK ? "success" : "none" });
             resolve(res);
         }).catch(err => {
-            reject(err);
-        }).then(() => {
             uni.hideLoading();
+            uni.showToast({ title: "上传失败\r\n" + err, icon: "none" });
+        }).then(() => {
         });
     });
 };
