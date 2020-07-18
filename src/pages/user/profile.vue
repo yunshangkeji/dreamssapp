@@ -3,7 +3,7 @@
     <uni-list>
       <uni-list-item title="头像" :showArrow="true" @click="changeAvatar">
         <template v-slot:right>
-          <image style="width: 40px;height: 40px;" :src="user_profile.headimgurl" mode="widthFix" />
+          <image class="avatar" :src="user_profile.headimgurl" mode="widthFix" />
         </template>
       </uni-list-item>
       <uni-list-item
@@ -148,10 +148,9 @@ export default {
             .api("dreamss/user_profile:avatar", apiReqData)
             .then(apiResData => {
               // 取得上传配置后，开始上传到七牛云
-              upload(file, apiResData.upload_form).then(res => {
+              upload(file, apiResData.upload_form).then(uploadResData => {
                 //上传成功
-                console.log(res);
-                this.avatar = headimgurl;
+                that.user_profile.headimgurl = uploadResData.imageUrl;
               });
             });
         },
@@ -273,5 +272,11 @@ radio-group .uni-list-item__container {
 }
 radio-group .uni-list-item__content-title {
   font-size: 16px;
+}
+
+.avatar {
+  border-radius: 5px;
+  width: 60px;
+  height: 60px;
 }
 </style>
