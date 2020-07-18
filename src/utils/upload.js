@@ -1,19 +1,20 @@
 import axios from "axios";
-export default (file) => {
+export default (file, upload_form) => {
     uni.showLoading({ title: "文件传送中...", mask: true });
     return new Promise((resolve, reject) => {
         const service = axios.create({
             // axios中请求配置有baseURL选项，表示请求URL公共部分
-            baseURL: 'https://upload.qiniup.com',
+            baseURL: upload_form.url,
             // 超时
             timeout: 10000
         });
         const data = new FormData();
-        data.append('file', file);
+        for (var fieldName in upload_form.formdata) {
+            data.append(fieldName, upload_form.formdata[fieldName]);
+        }
+        data.append('file', upload_form.file_field_name);
         service.post('/', data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            headers: upload_form.headers,
         }).then(res => {
             resolve(res);
         }).catch(err => {

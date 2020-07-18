@@ -142,14 +142,18 @@ export default {
           // 选择图片后，先去API接口获取上传配置
           const apiReqData = {};
           console.log(imageRes);
-          that.api("dreamss/user_profile:avatar", apiReqData).then(() => {
-            // 取得上传配置后，开始上传到七牛云
-            upload(imageRes.tempFiles[0]).then(res => {
-              //上传成功
-              console.log(res);
-              this.avatar = headimgurl;
+          const file = imageRes.tempFiles[0];
+          apiReqData.file_name = file.name;
+          that
+            .api("dreamss/user_profile:avatar", apiReqData)
+            .then(apiResData => {
+              // 取得上传配置后，开始上传到七牛云
+              upload(file, apiResData.upload_form).then(res => {
+                //上传成功
+                console.log(res);
+                this.avatar = headimgurl;
+              });
             });
-          });
         },
         fail() {}
       });
