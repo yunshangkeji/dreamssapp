@@ -136,7 +136,7 @@ export default {
           // 选择图片后，先去API接口获取上传配置
           const apiReqData = {};
           console.log(imageRes);
-          that.api("dreamss/user:avatar", apiReqData).then(() => {
+          that.api("dreamss/user_profile:avatar", apiReqData).then(() => {
             // 取得上传配置后，开始上传到七牛云
             upload(imageRes.tempFiles[0]).then(res => {
               //上传成功
