@@ -3,6 +3,7 @@
 		{
 			"path": "pages/main/index",
 			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "首页"
 			}
 		},
@@ -45,6 +46,7 @@
 		{
 			"path": "pages/user/index",
 			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "我的"
 			}
 		},

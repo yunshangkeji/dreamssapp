@@ -18,6 +18,10 @@ export default {
       // 提示加载中
       return this.$store.getters.wechatCode;
     }
+  },
+  onPullDownRefresh() {
+    console.log("main.index.onPullDownRefresh");
+    uni.stopPullDownRefresh();
   }
 };
 </script>
