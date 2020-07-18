@@ -39,12 +39,21 @@ export default {
     };
   },
   created() {
-    this.api("dreamss/user:get", {}).then(apiResData => {
-      const user_profile = this.getMapObject(apiResData["user_profile"]);
-      this.user_profile = user_profile;
+    this.getList();
+  },
+  onPullDownRefresh() {
+    console.log("user.index.onPullDownRefresh");
+    this.getList().then(() => {
+      uni.stopPullDownRefresh();
     });
   },
   methods: {
+    getList() {
+      return this.api("dreamss/user:get", {}).then(apiResData => {
+        const user_profile = this.getMapObject(apiResData["user_profile"]);
+        this.user_profile = user_profile;
+      });
+    },
     getMapObject(object) {
       if (typeof object === null) {
         return {};

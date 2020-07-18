@@ -100,6 +100,12 @@ export default {
   created() {
     this.apiReqGet();
   },
+  onPullDownRefresh() {
+    console.log("user.index.onPullDownRefresh");
+    this.apiReqGet().then(() => {
+      uni.stopPullDownRefresh();
+    });
+  },
   computed: {
     apiLoading() {
       // 提示加载中
@@ -112,7 +118,7 @@ export default {
   },
   methods: {
     apiReqGet() {
-      this.api("dreamss/user:get", {}).then(apiResData => {
+      return this.api("dreamss/user:get", {}).then(apiResData => {
         const user_profile = this.getMapObject(apiResData["user_profile"]);
         this.user_profile = user_profile;
       });
