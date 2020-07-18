@@ -1,5 +1,5 @@
 <template>
-  <view class="content">
+  <view class="page-view">
     <view v-if="!wechatCode">身份认证中，请稍后...</view>
     <xnlr v-else></xnlr>
   </view>
@@ -21,9 +21,3 @@ export default {
   }
 };
 </script>
-<style>
-.content {
-  padding: 0;
-  background-color: #ffffff;
-}
-</style>

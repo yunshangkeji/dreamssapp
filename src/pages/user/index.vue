@@ -1,8 +1,25 @@
 <template>
   <view class="content">
-    <view @click="changeAvatar">
-      <image class="avatar" :src="avatar" />
-    </view>
+    <uni-list>
+      <uni-list-item
+        :title="user_profile.nickname"
+        :note="user_profile.usernote"
+        :showArrow="true"
+        @click="navigate('profile')"
+      >
+        <template v-slot:left>
+          <image
+            class="avatar"
+            mode="widthFix"
+            :src="user_profile.headimgurl"
+            @click="changeAvatar"
+          />
+        </template>
+      </uni-list-item>
+      <uni-list-item :show-extra-icon="true" :extra-icon="extraIcon1" title="我的钱包（未完成）" />
+      <uni-list-item :show-extra-icon="true" :extra-icon="extraIcon1" title="接单管理（未完成）" />
+      <uni-list-item :show-extra-icon="true" :extra-icon="extraIcon1" title="后台管理（未完成）" />
+    </uni-list>
   </view>
 </template>
 <script>
@@ -10,53 +27,46 @@ import upload from "@/utils/upload";
 export default {
   data() {
     return {
-      avatar: ""
+      extraIcon1: {
+        color: "#007aff",
+        size: "22",
+        type: "gear-filled"
+      },
+      user_profile: {
+        headimgurl: "http://qiniu.feieryun.cn/dreamssapp/logo.jpg",
+        nickname: "数据加载中..."
+      }
     };
   },
+  created() {
+    this.api("dreamss/user:get", {}).then(apiResData => {
+      const user_profile = this.getMapObject(apiResData["user_profile"]);
+      this.user_profile = user_profile;
+    });
+  },
   methods: {
-    changeAvatar() {
-      const that = this;
-      uni.showActionSheet({
-        // itemList按钮的文字接受的是数组
-        itemList: ["查看头像", "从相册选择图片"],
-        success(e) {
-          switch (e.tapIndex) {
-            case 0:
-              // 用户点击了预览当前图片
-              // 可以自己实现当前头像链接的读取
-              let url = "../../static/1.png";
-              let arr = [];
-              arr.push(url);
-              uni.previewImage({
-                // 预览功能图片也必须是数组的
-                urls: arr
-              });
-              break;
-            case 1:
-              // 用户点击了从图库上传
-              uni.chooseImage({
-                count: 1,
-                sizeType: ["compressed"],
-                success(imageRes) {
-                  // 选择图片后，先去API接口获取上传配置
-                  const apiReqData = {};
-                  console.log(imageRes);
-                  that.api("wechat/user_avatar_upload", apiReqData).then(() => {
-                    // 取得上传配置后，开始上传到七牛云
-                    upload(imageRes.tempFiles[0]).then(res => {
-                      //上传成功
-                      console.log(res);
-                      //this.avatar = fileUrl;
-                    });
-                  });
-                },
-                fail() {}
-              });
-              break;
-          }
-        }
+    getMapObject(object) {
+      if (typeof object === null) {
+        return {};
+      }
+      if (typeof object !== "object") {
+        return {};
+      }
+      return object;
+    },
+    navigate(name) {
+      uni.navigateTo({
+        url: name
       });
     }
   }
 };
 </script>
+<style scoped>
+.avatar {
+  border-radius: 5px;
+  width: 60px;
+  height: 60px;
+  margin-right: 10px;
+}
+</style>

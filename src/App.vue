@@ -95,12 +95,15 @@ m-input {
   flex: 1;
 }
 
+.page-view {
+  flex: 1;
+}
+
 .content {
   display: flex;
   flex: 1;
   flex-direction: column;
   background-color: #efeff4;
-  padding: 10px;
 }
 
 .input-group {

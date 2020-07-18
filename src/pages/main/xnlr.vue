@@ -1,5 +1,5 @@
 <template>
-  <view class="content">
+  <view class="page-view">
     <view class="header">
       <view style="padding: 5px;text-align:center">
         <img
@@ -135,11 +135,7 @@ export default {
 };
 </script>
 
-<style>
-.content {
-  padding: 0;
-  background-color: #ffffff;
-}
+<style scoped>
 
 .header {
   background-image: url("http://qiniu.feieryun.cn/dreamssapp/bg.png");
